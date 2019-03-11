@@ -78,3 +78,5 @@ __pycache__/
 .DS_Store
 .idea/
 cmake-build-debug/
+obj/
+uwimg
