@@ -150,6 +150,33 @@ src/args.c.s:
 	$(MAKE) -f CMakeFiles/cv_library.dir/build.make CMakeFiles/cv_library.dir/src/args.c.s
 .PHONY : src/args.c.s
 
+src/filter_image.o: src/filter_image.c.o
+
+.PHONY : src/filter_image.o
+
+# target to build an object file
+src/filter_image.c.o:
+	$(MAKE) -f CMakeFiles/cv_library.dir/build.make CMakeFiles/cv_library.dir/src/filter_image.c.o
+.PHONY : src/filter_image.c.o
+
+src/filter_image.i: src/filter_image.c.i
+
+.PHONY : src/filter_image.i
+
+# target to preprocess a source file
+src/filter_image.c.i:
+	$(MAKE) -f CMakeFiles/cv_library.dir/build.make CMakeFiles/cv_library.dir/src/filter_image.c.i
+.PHONY : src/filter_image.c.i
+
+src/filter_image.s: src/filter_image.c.s
+
+.PHONY : src/filter_image.s
+
+# target to generate assembly for a file
+src/filter_image.c.s:
+	$(MAKE) -f CMakeFiles/cv_library.dir/build.make CMakeFiles/cv_library.dir/src/filter_image.c.s
+.PHONY : src/filter_image.c.s
+
 src/load_image.o: src/load_image.c.o
 
 .PHONY : src/load_image.o
@@ -177,6 +204,33 @@ src/load_image.c.s:
 	$(MAKE) -f CMakeFiles/cv_library.dir/build.make CMakeFiles/cv_library.dir/src/load_image.c.s
 .PHONY : src/load_image.c.s
 
+src/main.o: src/main.c.o
+
+.PHONY : src/main.o
+
+# target to build an object file
+src/main.c.o:
+	$(MAKE) -f CMakeFiles/cv_library.dir/build.make CMakeFiles/cv_library.dir/src/main.c.o
+.PHONY : src/main.c.o
+
+src/main.i: src/main.c.i
+
+.PHONY : src/main.i
+
+# target to preprocess a source file
+src/main.c.i:
+	$(MAKE) -f CMakeFiles/cv_library.dir/build.make CMakeFiles/cv_library.dir/src/main.c.i
+.PHONY : src/main.c.i
+
+src/main.s: src/main.c.s
+
+.PHONY : src/main.s
+
+# target to generate assembly for a file
+src/main.c.s:
+	$(MAKE) -f CMakeFiles/cv_library.dir/build.make CMakeFiles/cv_library.dir/src/main.c.s
+.PHONY : src/main.c.s
+
 src/process_image.o: src/process_image.c.o
 
 .PHONY : src/process_image.o
@@ -203,6 +257,33 @@ src/process_image.s: src/process_image.c.s
 src/process_image.c.s:
 	$(MAKE) -f CMakeFiles/cv_library.dir/build.make CMakeFiles/cv_library.dir/src/process_image.c.s
 .PHONY : src/process_image.c.s
+
+src/resize_image.o: src/resize_image.c.o
+
+.PHONY : src/resize_image.o
+
+# target to build an object file
+src/resize_image.c.o:
+	$(MAKE) -f CMakeFiles/cv_library.dir/build.make CMakeFiles/cv_library.dir/src/resize_image.c.o
+.PHONY : src/resize_image.c.o
+
+src/resize_image.i: src/resize_image.c.i
+
+.PHONY : src/resize_image.i
+
+# target to preprocess a source file
+src/resize_image.c.i:
+	$(MAKE) -f CMakeFiles/cv_library.dir/build.make CMakeFiles/cv_library.dir/src/resize_image.c.i
+.PHONY : src/resize_image.c.i
+
+src/resize_image.s: src/resize_image.c.s
+
+.PHONY : src/resize_image.s
+
+# target to generate assembly for a file
+src/resize_image.c.s:
+	$(MAKE) -f CMakeFiles/cv_library.dir/build.make CMakeFiles/cv_library.dir/src/resize_image.c.s
+.PHONY : src/resize_image.c.s
 
 src/test.o: src/test.c.o
 
@@ -243,12 +324,21 @@ help:
 	@echo "... src/args.o"
 	@echo "... src/args.i"
 	@echo "... src/args.s"
+	@echo "... src/filter_image.o"
+	@echo "... src/filter_image.i"
+	@echo "... src/filter_image.s"
 	@echo "... src/load_image.o"
 	@echo "... src/load_image.i"
 	@echo "... src/load_image.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
 	@echo "... src/process_image.o"
 	@echo "... src/process_image.i"
 	@echo "... src/process_image.s"
+	@echo "... src/resize_image.o"
+	@echo "... src/resize_image.i"
+	@echo "... src/resize_image.s"
 	@echo "... src/test.o"
 	@echo "... src/test.i"
 	@echo "... src/test.s"

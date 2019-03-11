@@ -70,9 +70,22 @@ CMakeFiles/cv_library.dir/src/args.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/cv_library.dir/src/args.c.s"
 	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/bogdanfloris/Downloads/Code/cv-library/src/args.c -o CMakeFiles/cv_library.dir/src/args.c.s
 
+CMakeFiles/cv_library.dir/src/filter_image.c.o: CMakeFiles/cv_library.dir/flags.make
+CMakeFiles/cv_library.dir/src/filter_image.c.o: ../src/filter_image.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/cv_library.dir/src/filter_image.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/cv_library.dir/src/filter_image.c.o   -c /Users/bogdanfloris/Downloads/Code/cv-library/src/filter_image.c
+
+CMakeFiles/cv_library.dir/src/filter_image.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/cv_library.dir/src/filter_image.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/bogdanfloris/Downloads/Code/cv-library/src/filter_image.c > CMakeFiles/cv_library.dir/src/filter_image.c.i
+
+CMakeFiles/cv_library.dir/src/filter_image.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/cv_library.dir/src/filter_image.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/bogdanfloris/Downloads/Code/cv-library/src/filter_image.c -o CMakeFiles/cv_library.dir/src/filter_image.c.s
+
 CMakeFiles/cv_library.dir/src/load_image.c.o: CMakeFiles/cv_library.dir/flags.make
 CMakeFiles/cv_library.dir/src/load_image.c.o: ../src/load_image.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building C object CMakeFiles/cv_library.dir/src/load_image.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/cv_library.dir/src/load_image.c.o"
 	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/cv_library.dir/src/load_image.c.o   -c /Users/bogdanfloris/Downloads/Code/cv-library/src/load_image.c
 
 CMakeFiles/cv_library.dir/src/load_image.c.i: cmake_force
@@ -83,9 +96,22 @@ CMakeFiles/cv_library.dir/src/load_image.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/cv_library.dir/src/load_image.c.s"
 	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/bogdanfloris/Downloads/Code/cv-library/src/load_image.c -o CMakeFiles/cv_library.dir/src/load_image.c.s
 
+CMakeFiles/cv_library.dir/src/main.c.o: CMakeFiles/cv_library.dir/flags.make
+CMakeFiles/cv_library.dir/src/main.c.o: ../src/main.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/cv_library.dir/src/main.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/cv_library.dir/src/main.c.o   -c /Users/bogdanfloris/Downloads/Code/cv-library/src/main.c
+
+CMakeFiles/cv_library.dir/src/main.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/cv_library.dir/src/main.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/bogdanfloris/Downloads/Code/cv-library/src/main.c > CMakeFiles/cv_library.dir/src/main.c.i
+
+CMakeFiles/cv_library.dir/src/main.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/cv_library.dir/src/main.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/bogdanfloris/Downloads/Code/cv-library/src/main.c -o CMakeFiles/cv_library.dir/src/main.c.s
+
 CMakeFiles/cv_library.dir/src/process_image.c.o: CMakeFiles/cv_library.dir/flags.make
 CMakeFiles/cv_library.dir/src/process_image.c.o: ../src/process_image.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building C object CMakeFiles/cv_library.dir/src/process_image.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building C object CMakeFiles/cv_library.dir/src/process_image.c.o"
 	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/cv_library.dir/src/process_image.c.o   -c /Users/bogdanfloris/Downloads/Code/cv-library/src/process_image.c
 
 CMakeFiles/cv_library.dir/src/process_image.c.i: cmake_force
@@ -96,9 +122,22 @@ CMakeFiles/cv_library.dir/src/process_image.c.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/cv_library.dir/src/process_image.c.s"
 	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/bogdanfloris/Downloads/Code/cv-library/src/process_image.c -o CMakeFiles/cv_library.dir/src/process_image.c.s
 
+CMakeFiles/cv_library.dir/src/resize_image.c.o: CMakeFiles/cv_library.dir/flags.make
+CMakeFiles/cv_library.dir/src/resize_image.c.o: ../src/resize_image.c
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building C object CMakeFiles/cv_library.dir/src/resize_image.c.o"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/cv_library.dir/src/resize_image.c.o   -c /Users/bogdanfloris/Downloads/Code/cv-library/src/resize_image.c
+
+CMakeFiles/cv_library.dir/src/resize_image.c.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing C source to CMakeFiles/cv_library.dir/src/resize_image.c.i"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -E /Users/bogdanfloris/Downloads/Code/cv-library/src/resize_image.c > CMakeFiles/cv_library.dir/src/resize_image.c.i
+
+CMakeFiles/cv_library.dir/src/resize_image.c.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling C source to assembly CMakeFiles/cv_library.dir/src/resize_image.c.s"
+	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -S /Users/bogdanfloris/Downloads/Code/cv-library/src/resize_image.c -o CMakeFiles/cv_library.dir/src/resize_image.c.s
+
 CMakeFiles/cv_library.dir/src/test.c.o: CMakeFiles/cv_library.dir/flags.make
 CMakeFiles/cv_library.dir/src/test.c.o: ../src/test.c
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building C object CMakeFiles/cv_library.dir/src/test.c.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building C object CMakeFiles/cv_library.dir/src/test.c.o"
 	/Library/Developer/CommandLineTools/usr/bin/cc $(C_DEFINES) $(C_INCLUDES) $(C_FLAGS) -o CMakeFiles/cv_library.dir/src/test.c.o   -c /Users/bogdanfloris/Downloads/Code/cv-library/src/test.c
 
 CMakeFiles/cv_library.dir/src/test.c.i: cmake_force
@@ -112,20 +151,26 @@ CMakeFiles/cv_library.dir/src/test.c.s: cmake_force
 # Object files for target cv_library
 cv_library_OBJECTS = \
 "CMakeFiles/cv_library.dir/src/args.c.o" \
+"CMakeFiles/cv_library.dir/src/filter_image.c.o" \
 "CMakeFiles/cv_library.dir/src/load_image.c.o" \
+"CMakeFiles/cv_library.dir/src/main.c.o" \
 "CMakeFiles/cv_library.dir/src/process_image.c.o" \
+"CMakeFiles/cv_library.dir/src/resize_image.c.o" \
 "CMakeFiles/cv_library.dir/src/test.c.o"
 
 # External object files for target cv_library
 cv_library_EXTERNAL_OBJECTS =
 
 cv_library: CMakeFiles/cv_library.dir/src/args.c.o
+cv_library: CMakeFiles/cv_library.dir/src/filter_image.c.o
 cv_library: CMakeFiles/cv_library.dir/src/load_image.c.o
+cv_library: CMakeFiles/cv_library.dir/src/main.c.o
 cv_library: CMakeFiles/cv_library.dir/src/process_image.c.o
+cv_library: CMakeFiles/cv_library.dir/src/resize_image.c.o
 cv_library: CMakeFiles/cv_library.dir/src/test.c.o
 cv_library: CMakeFiles/cv_library.dir/build.make
 cv_library: CMakeFiles/cv_library.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Linking C executable cv_library"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Linking C executable cv_library"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/cv_library.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

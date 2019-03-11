@@ -45,7 +45,6 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/Users/bogdanfloris/Downloads/Code/cv-library/src"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
 					<Add directory="/usr/local/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.0/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
@@ -68,7 +67,6 @@
 				<Option compiler="gcc"/>
 				<Compiler>
 					<Add directory="/Users/bogdanfloris/Downloads/Code/cv-library/src"/>
-					<Add directory="/Library/Developer/CommandLineTools/usr/include/c++/v1"/>
 					<Add directory="/usr/local/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/lib/clang/10.0.0/include"/>
 					<Add directory="/Library/Developer/CommandLineTools/usr/include"/>
@@ -90,13 +88,22 @@
 		<Unit filename="/Users/bogdanfloris/Downloads/Code/cv-library/src/args.h">
 			<Option target="cv_library"/>
 		</Unit>
+		<Unit filename="/Users/bogdanfloris/Downloads/Code/cv-library/src/filter_image.c">
+			<Option target="cv_library"/>
+		</Unit>
 		<Unit filename="/Users/bogdanfloris/Downloads/Code/cv-library/src/image.h">
 			<Option target="cv_library"/>
 		</Unit>
 		<Unit filename="/Users/bogdanfloris/Downloads/Code/cv-library/src/load_image.c">
 			<Option target="cv_library"/>
 		</Unit>
+		<Unit filename="/Users/bogdanfloris/Downloads/Code/cv-library/src/main.c">
+			<Option target="cv_library"/>
+		</Unit>
 		<Unit filename="/Users/bogdanfloris/Downloads/Code/cv-library/src/process_image.c">
+			<Option target="cv_library"/>
+		</Unit>
+		<Unit filename="/Users/bogdanfloris/Downloads/Code/cv-library/src/resize_image.c">
 			<Option target="cv_library"/>
 		</Unit>
 		<Unit filename="/Users/bogdanfloris/Downloads/Code/cv-library/src/stb_image.h">

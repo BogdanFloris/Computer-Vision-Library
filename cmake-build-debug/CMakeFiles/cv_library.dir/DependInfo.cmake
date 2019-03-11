@@ -5,8 +5,11 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
   "/Users/bogdanfloris/Downloads/Code/cv-library/src/args.c" "/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles/cv_library.dir/src/args.c.o"
+  "/Users/bogdanfloris/Downloads/Code/cv-library/src/filter_image.c" "/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles/cv_library.dir/src/filter_image.c.o"
   "/Users/bogdanfloris/Downloads/Code/cv-library/src/load_image.c" "/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles/cv_library.dir/src/load_image.c.o"
+  "/Users/bogdanfloris/Downloads/Code/cv-library/src/main.c" "/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles/cv_library.dir/src/main.c.o"
   "/Users/bogdanfloris/Downloads/Code/cv-library/src/process_image.c" "/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles/cv_library.dir/src/process_image.c.o"
+  "/Users/bogdanfloris/Downloads/Code/cv-library/src/resize_image.c" "/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles/cv_library.dir/src/resize_image.c.o"
   "/Users/bogdanfloris/Downloads/Code/cv-library/src/test.c" "/Users/bogdanfloris/Downloads/Code/cv-library/cmake-build-debug/CMakeFiles/cv_library.dir/src/test.c.o"
   )
 set(CMAKE_C_COMPILER_ID "AppleClang")
