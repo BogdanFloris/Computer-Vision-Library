@@ -176,50 +176,22 @@ void hsv_to_rgb(image im)
             float s = get_pixel(im, x, y, 1);
             float v = get_pixel(im, x, y, 2);
             // calculate new hue
-            h *= 6;
-            float i = floorf(h);
-            float f = h - i;
-            // calculate m, n, k
-            float m = v * (1 - s);
-            float n = v * (1 - s * f);
-            float k = v * (1 - s * (1 - f));
+            float i = floorf(h * 6);
+            float f = h * 6 - i;
+            // calculate intermediary values
+            float p = v * (1 - s);
+            float q = v * (1 - s * f);
+            float t = v * (1 - s * (1 - f));
             // calculate r, g, b
             float r, g, b;
-            switch ((int) i) {
-                case 0:
-                    r = v;
-                    g = k;
-                    b = m;
-                    break;
-                case 1:
-                    r = n;
-                    g = v;
-                    b = m;
-                    break;
-                case 2:
-                    r = m;
-                    g = v;
-                    b = k;
-                    break;
-                case 3:
-                    r = m;
-                    g = n;
-                    b = v;
-                    break;
-                case 4:
-                    r = k;
-                    g = m;
-                    b = v;
-                    break;
-                case 6:
-                    r = v;
-                    g = m;
-                    b = n;
-                    break;
-                default:
-                    r = 0;
-                    g = 0;
-                    b = 0;
+            switch ((int) i % 6) {
+                case 0: r = v, g = t, b = p; break;
+                case 1: r = q, g = v, b = p; break;
+                case 2: r = p, g = v, b = t; break;
+                case 3: r = p, g = q, b = v; break;
+                case 4: r = t, g = p, b = v; break;
+                case 5: r = v, g = p, b = q; break;
+                default: r = 0, g = 0, b = 0;
             }
             // assign to channels
             set_pixel(im, x, y, 0, r);
