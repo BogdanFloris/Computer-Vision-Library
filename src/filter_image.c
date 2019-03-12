@@ -245,9 +245,31 @@ void feature_normalize(image im)
 
 image *sobel_image(image im)
 {
+    // allocate the memory to hold the two images (gradient magnitude and orientation)
     image *res = calloc(2, sizeof(image));
-    res[0] = im;
-    res[1] = im;
+    // initialize the gradient filters in the x and y directions
+    image gx_filter = make_gx_filter();
+    image gy_filter = make_gy_filter();
+    // convolve to get the gradients
+    image gx = convolve_image(im, gx_filter, 0);
+    image gy = convolve_image(im, gy_filter, 0);
+    // initialize gradient magnitude and theta images
+    image mag = make_image(im.w, im.h, 1);
+    image theta = make_image(im.w, im.h, 1);
+    // calculate gradient magnitude and theta
+    int x, y;
+    for (y = 0; y < im.h; ++y) {
+        for (x = 0; x < im.w; ++x) {
+            float pixel_gx = get_pixel(gx, x, y, 0);
+            float pixel_gy = get_pixel(gy, x, y, 0);
+            float val_mag = sqrtf(powf(pixel_gx, 2) + powf(pixel_gy, 2));
+            float val_theta = atan2f(pixel_gy, pixel_gx);
+            set_pixel(mag, x, y, 0, val_mag);
+            set_pixel(theta, x, y, 0, val_theta);
+        }
+    }
+    res[0] = mag;
+    res[1] = theta;
     return res;
 }
 

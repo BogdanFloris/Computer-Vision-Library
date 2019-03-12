@@ -38,3 +38,13 @@ reconstruct = lfreq + hfreq
 save_image(lfreq, "low-frequency")
 save_image(hfreq, "high-frequency")
 save_image(reconstruct, "reconstruct")
+
+# sobel magnitude
+im = load_image("data/dog.jpg")
+res = sobel_image(im)
+mag = res[0]
+theta = res[1]
+feature_normalize(mag)
+feature_normalize(theta)
+save_image(mag, "magnitude")
+save_image(theta, "theta")
