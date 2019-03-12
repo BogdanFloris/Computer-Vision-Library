@@ -1,224 +1,183 @@
-# CSE 455 Homework 1 #
+![panorama of field](figs/field_panorama.jpg)
+
+# CSE 455 Homework 2 #
 
 Welcome friends,
 
-It's time for assignment 1! This one may be a little harder than the last one so remember to start early and start often! In order to make grading easier, please only edit the files we mention. You should be able to submit `resize_image.c` and `filter_image.c` and we should be able to compile and run them with a fresh clone of the repo without any other files.
+It's time for assignment 2! This one may be a little harder than the last one so remember to start early and start often!
 
-To start out this homework, copy over your `process_image.c` file from hw0 to the `src` file in this homework. We will be continuing to build out your image library.
+To start out this homework, copy over your `process_image.c`, `filter_image.c`, and `resize_image.c` file from hw1 to the `src` file in this homework. We will be continuing to build out your image library.
 
-## 1. Image resizing ##
+## Let's make a panorama! ##
 
-We've been talking a lot about resizing and interpolation in class, now's your time to do it! To resize we'll need some interpolation methods and a function to create a new image and fill it in with our interpolation methods.
+This homework covers a lot, including finding keypoints in an image, describing those key points, matching them to those points in another image, computing the transform from one image to the other, and stitching them together into a panorama.
 
-- Fill in `float nn_interpolate(image im, float x, float y, int c);` in `src/resize_image.c`
-    - It should perform nearest neighbor interpolation. Remember to use the closest `int`, not just type-cast because in C that will truncate towards zero.
-- Fill in `image nn_resize(image im, int w, int h);`. It should:
-    - Create a new image that is `w x h` and the same number of channels as `im`
-    - Loop over the pixels and map back to the old coordinates
-    - Use nearest-neighbor interpolate to fill in the image
+The high-level algorithm is already done for you! You can find it near the bottom of `src/panorama_image.c`, it looks approximately like:
 
-Now you should be able to run the following `python` command:
 
-    from uwimg import *
-    im = load_image("data/dogsmall.jpg")
-    a = nn_resize(im, im.w*4, im.h*4)
-    save_image(a, "dog4x-nn")
+    image panorama_image(image a, image b, float sigma, float thresh, int nms, float inlier_thresh, int iters, int cutoff)
+    {
+        // Calculate corners and descriptors
+        descriptor *ad = harris_corner_detector(a, sigma, thresh, nms, &an);
+        descriptor *bd = harris_corner_detector(b, sigma, thresh, nms, &bn);
 
-Your image should look something like:
+        // Find matches
+        match *m = match_descriptors(ad, an, bd, bn, &mn);
 
-![blocky dog](figs/dog4x-nn.png)
+        // Run RANSAC to find the homography
+        matrix H = RANSAC(m, mn, inlier_thresh, iters, cutoff);
 
-Finally, fill in the similar functions `bilinear_interpolate` and `bilinear_resize` to perform bilinear interpolation. Try it out again in `python`:
+        // Stitch the images together with the homography
+        image comb = combine_images(a, b, H);
+        return comb;
+    }
 
-    from uwimg import *
-    im = load_image("data/dogsmall.jpg")
-    a = bilinear_resize(im, im.w*4, im.h*4)
-    save_image(a, "dog4x-bl")
+So we'll find the corner points in an image using a Harris corner detector. Then we'll match together the descriptors of those corners. We'll use RANSAC to estimate a projection from one image coordinate system to the other. Finally, we'll stitch together the images using this projection.
 
-![smooth dog](figs/dog4x-bl.png)
+First we need to find those corners!
 
-These functions will work fine for small changes in size, but when we try to make our image smaller, say a thumbnail, we get very noisy results:
+## 1. Harris corner detection ##
 
-    from uwimg import *
-    im = load_image("data/dog.jpg")
-    a = nn_resize(im, im.w//7, im.h//7)
-    save_image(a, "dog7th-bl")
+We'll be implementing Harris corner detection as discussed in class. The basic algorithm is:
 
-![jagged dog thumbnail](figs/dog7th-nn.png)
+    Calculate image derivatives Ix and Iy.
+    Calculate measures IxIx, IyIy, and IxIy.
+    Calculate structure matrix components as weighted sum of nearby measures.
+    Calculate Harris "cornerness" as estimate of 2nd eigenvalue: det(S) - α trace(S)^2, α = .06
+    Run non-max suppression on response map
 
-As we discussed, we need to filter before we do this extreme resize operation!
+## 1.1 Compute the structure matrix ##
 
-## 2. Image filtering with convolutions ##
+Fill in `image structure_matrix(image im, float sigma);` in `harris_image.c`. This will perform the first 3 steps of the algorithm: calculating derivatives, the corresponding measures, and the weighted sum of nearby derivative information. As discussed in class, this weighted sum can be easily computed with a Gaussian blur.
 
-We'll start out by filtering the image with a box filter. There are very fast ways of performing this operation but instead, we'll do the naive thing and implement it as a convolution because it will generalize to other filters as well!
-    
-### 2.1 Create your box filter ###
+### 1.1b Optional: Make a fast smoother ###
 
-Ok, bear with me. We want to create a box filter, which as discussed in class looks like this:
+If you want a fast corner detector you can decompose the Gaussian blur from one large 2d convolution to 2 1d convolutions. Instead of using an N x N filter you can convolve with a 1 x N filter followed by the same filter flipped to be N x 1.
 
-![box filter](figs/boxfilter.png)
+Fill in `image make_1d_gaussian(float sigma)` and `image smooth_image(image im, float sigma)` to use this decomposed Gaussian smoothing.
 
-One way to do this is make an image, fill it in with all 1s, and then normalize it. That's what we'll do because the normalization function may be useful in the future!
+## 1.2 Computer cornerness from structure matrix ##
 
-First fill in `void l1_normalize(image im)`. This should normalize an image to sum to 1.
+Fill in `image cornerness_response(image S)`.
 
-Next fill in `image make_box_filter(int w)`. We will only use square box filters so just make your filter `w x w`. It should be a square image with one channel with uniform entries that sum to 1.
+## 1.3 Non-maximum suppression ##
 
-### 2.2 Write a convolution function ###
+We only want local maximum responses to our corner detector so that the matching is easier. Fill in `image nms_image(image im, int w)`.
 
-Now it's time to fill in `image convolve_image(image im, image filter, int preserve)`. For this function we have a few scenarios. With normal convolutions we do a weighted sum over an area of the image. With multiple channels in the input image there are a few possible cases we want to handle:
+For every pixel in `im`, check every neighbor within `w` pixels (Chebyshev distance). Equivalently, check the `2w+1` window centered at each pixel. If any responses are stronger, suppress that pixel's response (set it to a very low negative number).
 
-- If `filter` and `im` have the same number of channels then it's just a normal convolution. We sum over spatial and channel dimensions and produce a 1 channel image. UNLESS:
-- If `preserve` is set to 1 we should produce an image with the same number of channels as the input. This is useful if, for example, we want to run a box filter over an RGB image and get out an RGB image. This means each channel in the image will be filtered by the corresponding channel in the filter. UNLESS:
-- If the `filter` only has one channel but `im` has multiple channels we want to apply the filter to each of those channels. Then we either sum between channels or not depending on if `preserve` is set.
+## 1.4 Complete the Harris detector ##
 
-Also, `filter` better have either the same number of channels as `im` or have 1 channel. I check this with an `assert`.
+Fill in the missing sections of `descriptor *harris_corner_detector(image im, float sigma, float thresh, int nms, int *n)`. The function should return an array of descriptors for corners in the image. Code for calculating the descriptors is provided. Also, set the integer `*n` to be the number of corners found in the image.
 
-We are calling this a convolution but you don't need to flip the filter or anything (we're actually doing a cross-correlation). Just apply it to the image as we discussed in class:
+After you complete this function you should be able to calculate corners and descriptors for an image! Try running:
 
-![covolution](figs/convolution.png)
+    im = load_image("data/Rainier1.png")
+    detect_and_draw_corners(im, 2, 50, 3)
+    save_image(im, "corners")
 
-Once you are done, test out your convolution by filtering our image! We need to use `preserve` because we want to produce an image that is still RGB.
+This will detect corners using a Gaussian window of 2 sigma, a "cornerness" threshold of 100, and an nms distance of 3 (or window of 7x7). It should give you something like this:
 
-    from uwimg import *
-    im = load_image("data/dog.jpg")
-    f = make_box_filter(7)
-    blur = convolve_image(im, f, 1)
-    save_image(blur, "dog-box7")
+![rainier corners](figs/corners.jpg)
 
-We'll get some output that looks like this:
+Corners are marked with the crosses. They seem pretty sensible! Lots of corners near where snow meets rock and such. Try playing with the different values to see how the affect our corner detector.
 
-![covolution](figs/dog-box7.png)
+## 2 Patch matching ##
 
-Now we can use this to perform our thumbnail operation:
+To get a panorama we have to match up the corner detections with their appropriate counterpart in the other image. The descriptor code is already written for you. It consists of nearby pixels except with the center pixel value subtracted. This gives us some small amount of invariance to lighting conditions.
 
-    from uwimg import *
-    im = load_image("data/dog.jpg")
-    f = make_box_filter(7)
-    blur = convolve_image(im, f, 1)
-    thumb = nn_resize(blur, blur.w//7, blur.h//7)
-    save_image(thumb, "dogthumb")
+The rest of the homework takes place in `src/panorama_image.c`.
 
-![covolution](figs/dogthumb.png)
+## 2.1 Distance metric ##
+For comparing patches we'll use L1 distance. Squared error (L2 distance) can be problematic with outliers as we saw in class. We don't want a few rogue pixels to throw off our matching function. L1 distance (sum absolute difference) is better behaved with some outliers.
 
-Look at how much better our new resized thumbnail is!
+Implement float `l1_distance(float *a, float *b, int n)` between two vectors of floats. The vectors and how many values they contain is passed in.
 
-Resize                     |  Blur and Resize
-:-------------------------:|:-------------------------:
-![](figs/dog7th-nn.png)    | ![](figs/dogthumb.png)
+## 2.2a Find the best matches from a to b ##
 
-### 2.2 Make some more filters and try them out! ###
+First we'll look through descriptors for `image a` and find their best match with descriptors from `image b`. Fill in the first `TODO` in `match *match_descriptors(descriptor *a, int an, descriptor *b, int bn, int *mn)`.
 
-Fill in the functions `image make_highpass_filter()`, `image make_sharpen_filter()`, and `image make_emboss_filter()` to return the example kernels we covered in class. Try them out on some images! After you have, answer Question 2.2.1 and 2.2.2 in the source file (put your answer just right there)
+## 2.2b Eliminate multiple matches to the same descriptor in b  ##
 
-Highpass                   |  Sharpen                  | Emboss
-:-------------------------:|:-------------------------:|:--------------------|
-![](figs/highpass.png)     | ![](figs/sharpen.png)     | ![](figs/emboss.png)
+Each descriptor in `a` will only appear in one match. But several of them may match with the same descriptor in `b`. This can be problematic. Namely, if a bunch of matches go to the same point there is an easy homography to estimate that just shrinks the whole image down to one point to project from `a` to `b`. But we know that's wrong. So let's just get rid of these duplicate matches and make our matches be one-to-one.
 
-### 2.3 Implement a Gaussian kernel ###
+To do this, sort the matches based on distance so shortest distance is first. I've already implemented a comparator for you to use, just look up how to properly apply `qsort` if you don't know already. Next, loop through the matches in order and keep track of which elements in `b` we've seen. If we see one for a second (or third, etc.) time, throw it out! To throw it out, just shift the other elements forward in the list and then remember how many one-to-one matches we have at the end. This can be done with a single pass through the data.
 
-Implement `image make_gaussian_filter(float sigma)` which will take a standard deviation value and return a filter that smooths using a gaussian with that sigma. How big should the filter be, you ask? 99% of the probability mass for a gaussian is within +/- 3 standard deviations so make the kernel be 6 times the size of sigma. But also we want an odd number, so make it be the next highest odd integer from 6x sigma.
+Once this is done we can show the matches we discover between the images:
 
-We need to fill in our kernel with some values. Use the probability density function for a 2d gaussian:
+    a = load_image("data/Rainier1.png")
+    b = load_image("data/Rainier2.png")
+    m = find_and_draw_matches(a, b, 2, 50, 3)
+    save_image(m, "matches")
 
-![2d gaussian](figs/2dgauss.png)
+Which gives you:
 
-Technically this isn't perfect, what we would really want to do is integrate over the area covered by each cell in the filter. But that's much more complicated and this is a decent estimate. Remember though, this is a blurring filter so we want all the weights to sum to 1. If only we had a function for that....
+![matches](figs/matches.jpg)
 
-Now you should be able to try out your new blurring function! It should have much less noise than the box filter:
 
-    from uwimg import *
-    im = load_image("data/dog.jpg")
-    f = make_gaussian_filter(2)
-    blur = convolve_image(im, f, 1)
-    save_image(blur, "dog-gauss2")
+## 3. Fitting our projection to the data ##
 
-![blurred dog](figs/dog-gauss2.png)
+Now that we have some matches we need to predict the projection between these two sets of points! However, this can be hard because we have a lot of noisy matches. Many of them are correct but we also have some outliers hiding in the data.
 
-## 3. Hybrid images ##
+## 3.1 Projecting points with a homography ##
 
-Gaussian filters are cool because they are a true low-pass filter for the image. This means when we run them on an image we only get the low-frequency changes in an image like color. Conversely, we can subtract this low-frequency information from the original image to get the high frequency information!
+Implement `point project_point(matrix H, point p)` to project a point using matrix `H`. You can do this with the provided matrix library by calling `matrix_mult_matrix` (see `src/matrix.c`). Or you could pull out elements of the matrix and do the math yourself. Whatever you want! Just remember to do the proper normalization for converting from homogeneous coordinates back to image coordinates. (We talked about this in class, something with that w squiggly thing).
 
-Using this frequency separation we can do some pretty neat stuff. For example, check out [this tutorial on retouching skin](https://petapixel.com/2015/07/08/primer-using-frequency-separation-in-photoshop-for-skin-retouching/) in Photoshop (but only if you want to).
+## 3.2a  Calculate distances between points ##
 
-We can also make [really trippy images](http://cvcl.mit.edu/hybrid/OlivaTorralb_Hybrid_Siggraph06.pdf) that look different depending on if you are close or far away from them. That's what we'll be doing. They are hybrid images that take low frequency information from one image and high frequency info from another. Here's a picture of.... what exactly?
+`float point_distance(point p, point q)`. L2 distance. You know the formula.
 
-Small                     |  Medium | Large
-:-------------------------:|:-------:|:------------------:
-![](figs/marilyn-einstein-small.png)   | ![](figs/marilyn-einstein-medium.png) | ![](figs/marilyn-einstein.png)
+## 3.2b Calculate model inliers ##
 
-If you don't believe my resizing check out `figs/marilyn-einstein.png` and view it from far away and up close. Sorta neat, right?
+Figure out how many matches are inliers to a model. Fill in `int model_inliers(matrix H, match *m, int n, float thresh)` to loop over the points, project using the homography, and check if the projected point is within some `thresh`old distance of the actual matching point in the other image.
 
-Your job is to produce a similar image. But instead of famous dead people we'll be using famous fictional people! In particular, we'll be exposing the secret (but totally canon) sub-plot of the Harry Potter franchise that Dumbledore is a time-traveling Ron Weasely. Don't trust me?? The images don't lie! Wake up sheeple!
+Also, we want to bring inliers to the front of the list. This helps us later on with the fitting functions. Again, this should all be doable in one pass through the data.
 
+## 3.3 Randomize the matches ##
 
-Small                     | Large
-:-------------------------:|:------------------:
-![](figs/ronbledore-small.jpg)   | ![](figs/ronbledore.jpg) 
+One of the steps in RANSAC is drawing random matches to estimate a new model. One easy way to do this is randomly shuffle the array of matches and then take the first `n` elements to fit a model.
 
-For this task you'll have to extract the high frequency and low frequency from some images. You already know how to get low frequency, using your gaussian filter. To get high frequency you just subtract the low frequency data from the original image.
+Implement the [Fisher-Yates shuffle](https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle#The_modern_algorithm) in `void randomize_matches(match *m, int n)`.
 
-Fill in `image add_image(image a, image b)` and `image sub_image(image a, image b)` so we can perform our transformations. They should probably include some checks that the images are the same size and such. Now we should be able to run something like this:
+## 3.4 Fitting the homography ##
 
-    from uwimg import *
-    im = load_image("data/dog.jpg")
-    f = make_gaussian_filter(2)
-    lfreq = convolve_image(im, f, 1)
-    hfreq = im - lfreq
-    reconstruct = lfreq + hfreq
-    save_image(lfreq, "low-frequency")
-    save_image(hfreq, "high-frequency")
-    save_image(reconstruct, "reconstruct")
+We will solve for the homography using the matrix operations discussed in class to solve equations like `M a = b`. Most of this is already implemented, you just have to fill in the matrices `M` and `b` with our match information in the first TODO in `matrix compute_homography(match *matches, int n)`.
 
+You also have to read out the final results and populate our homography matrix. Consult the slides for details about what should go where, or derive it for yourself using the projection equations!
 
-Low frequency           |  High frequency | Reconstruction
-:-------------------------:|:-------:|:------------------:
-![](figs/low-frequency.png)   | ![](figs/high-frequency.png) | ![](figs/reconstruct.png)
+## 3.5 Implement RANSAC ##
 
-Note, the high-frequency image overflows when we save it to disk? Is this a problem for us? Why or why not?
+Implement the RANSAC algorithm discussed in class in `matrix RANSAC(match *m, int n, float thresh, int k, int cutoff)`. Pseudocode is provided.
 
-Use these functions to recreate your own Ronbledore image. You will need to tune your standard deviations for the gaussians you use. You will probably need different values for each image to get it to look good.
+## 3.6 Combine the images with a homography ##
 
-## 4. Sobel filters ##
+Now we have to stitch the images together with our homography! Given two images and a homography, stitch them together with `image combine_images(image a, image b, matrix H)`.
 
-The [Sobel filter](https://www.researchgate.net/publication/239398674_An_Isotropic_3x3_Image_Gradient_Operator) is cool because we can estimate the gradients and direction of those gradients in an image. They should be straightforward now that you all are such pros at image filtering.
+Some of this is already filled in. The first step is to figure out the bounds to the image. To do this we'll project the corners of `b` back onto the coordinate system for `a` using `Hinv`. Then we can figure out our "new" coordinates and where to put `image a` on the canvas. Paste `a` in the appropriate spot in the canvas.
 
-### 4.1 Make the filters ###
+Next we need to loop over pixels that might map to `image b`, perform the mapping to see if they do, and if so fill in the pixels with the appropriate color from `b`. Our mapping will likely land between pixel values in `b` so use bilinear interpolation to compute the pixel value (good thing you already implemented this!).
 
-First implement the functions to make our sobel filters. They are for estimating the gradient in the x and y direction:
+With all this working you should be able to create some basic panoramas:
 
-Gx                 |  Gy 
-:-----------------:|:------------------:
-![](figs/gx.png)   |  ![](figs/gy.png)
+    im1 = load_image("data/Rainier1.png")
+    im2 = load_image("data/Rainier2.png")
+    pan = panorama_image(im1, im2, thresh=50)
+    save_image(pan, "easy_panorama")
 
+![panorama](figs/easy_panorama.jpg)
 
-### 4.2 One more normalization... ###
+Try out some of the other panorama creation in `trypanorama.py`. If you stitch together multiple images you should turn off the `if` statement in `panorama_image` that marks corners and draws inliers.
 
-To visualize our sobel operator we'll want another normalization strategy, [feature normalization](https://en.wikipedia.org/wiki/Feature_scaling). This strategy is simple, we just want to scale the image so all values lie between [0-1]. In particular we will be [rescaling](https://en.wikipedia.org/wiki/Feature_scaling#Rescaling) the image by subtracting the minimum from all values and dividing by the range of the data. If the range is zero you should just set the whole image to 0 (don't divide by 0 that's bad).
+## Extra Credit ##
 
-### 4.3 Calculate gradient magnitude and direction ###
+Mapping all the images back to the same coordinates is bad for large field-of-view panoramas, as discussed in class. Implement `image cylindrical_project(image im, float f)` to project an image to cylindrical coordinates and then unroll it. Then stitch together some very big panoramas. Send in your favorite. Use your own images if you want!
 
-Fill in the function `image *sobel_image(image im)`. It should return two images, the gradient magnitude and direction. The strategy can be found [here](https://en.wikipedia.org/wiki/Sobel_operator#Formulation). We can visualize our magnitude using our normalization function:
+## More Extra Credit ##
 
-    from uwimg import *
-    im = load_image("data/dog.jpg")
-    res = sobel_image(im)
-    mag = res[0]
-    feature_normalize(mag)
-    save_image(mag, "magnitude")
+Map images to spherical coordinates and stitch together a really big panorama! Will parts of it be upside-down??
 
-Which results in:
 
-![](figs/magnitude.png)
+## 4. Turn it in ##
 
-### 4.4 Make a colorized representation ###
-
-Now using your sobel filter try to make a cool, stylized one. Fill in the function `image colorize_sobel(image im)`. I used the magnitude to specify the saturation and value of an image and the angle to specify the hue but you can do whatever you want (as long as it looks cool). I also used some smoothing:
-
-![](figs/lcolorized.png)
-
-
-## 5. Turn it in ##
-
-Turn in your `resize_image.c`, `filter_image.c`, `ronbledore.jpg` and `sobel.jpg` on canvas under Assignment 1.
+Turn in your `harris_image.c`, `panorama_image.c`, any changes you made to `trypanorama.py` and some good panoramas you generated on canvas under Assignment 2.
 

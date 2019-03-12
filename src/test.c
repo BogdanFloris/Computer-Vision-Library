@@ -2,9 +2,24 @@
 #include <math.h>
 #include <string.h>
 #include <assert.h>
+#include "matrix.h"
 #include "image.h"
 #include "test.h"
 #include "args.h"
+
+void feature_normalize2(image im)
+{
+    int i;
+    float min = im.data[0];
+    float max = im.data[0];
+    for(i = 0; i < im.w*im.h*im.c; ++i){
+        if(im.data[i] > max) max = im.data[i];
+        if(im.data[i] < min) min = im.data[i];
+    }
+    for(i = 0; i < im.w*im.h*im.c; ++i){
+        im.data[i] = (im.data[i] - min)/(max-min);
+    }
+}
 
 int tests_total = 0;
 int tests_fail = 0;
@@ -310,8 +325,8 @@ void test_sobel(){
     image *res = sobel_image(im);
     image mag = res[0];
     image theta = res[1];
-    feature_normalize(mag);
-    feature_normalize(theta);
+    feature_normalize2(mag);
+    feature_normalize2(theta);
 
     image gt_mag = load_image("figs/magnitude.png");
     image gt_theta = load_image("figs/theta.png");
@@ -343,17 +358,35 @@ void test_sobel(){
     free(res);
 }
 
-
-
-int do_test()
+void test_structure()
 {
-    TEST('1' == '1');
-    TEST('0' == '1');
-    return 0;
+    image im = load_image("data/dogbw.png");
+    image s = structure_matrix(im, 2);
+    feature_normalize2(s);
+    image gt = load_image("figs/structure.png");
+    TEST(same_image(s, gt));
+    free_image(im);
+    free_image(s);
+    free_image(gt);
+}
+
+void test_cornerness()
+{
+    image im = load_image("data/dogbw.png");
+    image s = structure_matrix(im, 2);
+    image c = cornerness_response(s);
+    feature_normalize2(c);
+    image gt = load_image("figs/response.png");
+    TEST(same_image(c, gt));
+    free_image(im);
+    free_image(s);
+    free_image(c);
+    free_image(gt);
 }
 
 void run_tests()
 {
+    //test_matrix();
     test_get_pixel();
     test_set_pixel();
     test_copy();
@@ -373,6 +406,8 @@ void run_tests()
     test_hybrid_image();
     test_frequency_image();
     test_sobel();
+    test_structure();
+    test_cornerness();
     printf("%d tests, %d passed, %d failed\n", tests_total, tests_total-tests_fail, tests_fail);
 }
 

@@ -9,9 +9,13 @@ add_executable(cv_library
         src/args.c
         src/args.h
         src/filter_image.c
+        src/harris_image.c
         src/image.h
         src/load_image.c
         src/main.c
+        src/matrix.c
+        src/matrix.h
+        src/panorama_image.c
         src/process_image.c
         src/resize_image.c
         src/stb_image.h
