@@ -8,14 +8,20 @@
 
 void l1_normalize(image im)
 {
-    float divisor = im.h * im.w * im.c;
+    float divisor = 0;
     int x, y, c;
     for (c = 0; c < im.c; ++c) {
         for (y = 0; y < im.h; ++y) {
             for (x = 0; x < im.w; ++x) {
+                divisor += get_pixel(im, x, y, c);
+            }
+        }
+    }
+    for (c = 0; c < im.c; ++c) {
+        for (y = 0; y < im.h; ++y) {
+            for (x = 0; x < im.w; ++x) {
                 float pixel = get_pixel(im, x, y, c);
-                pixel /= divisor;
-                set_pixel(im, x, y, c, pixel);
+                set_pixel(im, x, y, c, pixel / divisor);
             }
         }
     }
@@ -129,8 +135,23 @@ image make_emboss_filter()
 
 image make_gaussian_filter(float sigma)
 {
-    // TODO
-    return make_image(1,1,1);
+    double constant = 1 / (TWOPI * sigma * sigma);
+    int kernel_size = (int) ceilf(6 * sigma);
+    if (kernel_size % 2 == 0) {
+        ++kernel_size;
+    }
+    image gaussian = make_image(kernel_size, kernel_size, 1);
+    int offset = kernel_size / 2;
+    int x, y;
+    for (y = 0; y < kernel_size; ++y) {
+        for (x = 0; x < kernel_size; ++x) {
+            double coords_val = - (pow(x - offset, 2) + pow(y - offset, 2));
+            double val = constant * exp(coords_val / (double) (2 * sigma * sigma));
+            set_pixel(gaussian, x, y, 0, (float) val);
+        }
+    }
+    l1_normalize(gaussian);
+    return gaussian;
 }
 
 image add_image(image a, image b)
