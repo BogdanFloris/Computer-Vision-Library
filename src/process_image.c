@@ -9,22 +9,19 @@ float get_pixel(image im, int x, int y, int c)
     // perform padding for channel coordinate
     if (c < 0) {
         c = 0;
-    }
-    else if (c >= im.c) {
+    } else if (c >= im.c) {
         c = im.c - 1;
     }
     // perform padding for height coordinate
     if (y < 0) {
         y = 0;
-    }
-    else if (y >= im.h) {
+    } else if (y >= im.h) {
         y = im.h - 1;
     }
     // perform padding for width coordinate
     if (x < 0) {
         x = 0;
-    }
-    else if (x >= im.w) {
+    } else if (x >= im.w) {
         x = im.w - 1;
     }
     return *(im.data + ((c * im.h + y) * im.w + x));
@@ -110,8 +107,7 @@ void clamp_image(image im)
                 float val = get_pixel(im, x, y, c);
                 if (val < 0) {
                     val = 0;
-                }
-                else if (val > 1) {
+                } else if (val > 1) {
                     val = 1;
                 }
                 set_pixel(im, x, y, c, val);
@@ -154,22 +150,18 @@ void rgb_to_hsv(image im)
             float h_prime;
             if (c == 0) {
                 h_prime = 0;
-            }
-            else if (value == r) {
+            } else if (value == r) {
                 h_prime = (g - b) / c;
-            }
-            else if (value == g) {
+            } else if (value == g) {
                 h_prime = (b - r) / c + 2;
-            }
-            else {
+            } else {
                 h_prime = (r - g) / c + 4;
             }
             // now we can finally calculate the hue
             float hue;
             if (h_prime < 0) {
                 hue = h_prime / 6 + 1;
-            }
-            else {
+            } else {
                 hue = h_prime / 6;
             }
             // assign to channels
