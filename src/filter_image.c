@@ -188,25 +188,67 @@ image sub_image(image a, image b)
 
 image make_gx_filter()
 {
-    // TODO
-    return make_image(1,1,1);
+    image gx_filter = make_image(3, 3, 1);
+    set_pixel(gx_filter, 0, 0, 0, -1);
+    set_pixel(gx_filter, 0, 1, 0, -2);
+    set_pixel(gx_filter, 0, 2, 0, -1);
+    set_pixel(gx_filter, 2, 0, 0, 1);
+    set_pixel(gx_filter, 2, 1, 0, 2);
+    set_pixel(gx_filter, 2, 2, 0, 1);
+    return gx_filter;
 }
 
 image make_gy_filter()
 {
-    // TODO
-    return make_image(1,1,1);
+    image gy_filter = make_image(3, 3, 1);
+    set_pixel(gy_filter, 0, 0, 0, -1);
+    set_pixel(gy_filter, 1, 0, 0, -2);
+    set_pixel(gy_filter, 2, 0, 0, -1);
+    set_pixel(gy_filter, 0, 2, 0, 1);
+    set_pixel(gy_filter, 1, 2, 0, 2);
+    set_pixel(gy_filter, 2, 2, 0, 1);
+    return gy_filter;
 }
 
 void feature_normalize(image im)
 {
-    // TODO
+    float min = MAXFLOAT, max = -MAXFLOAT;
+    int x, y, c;
+    for (c = 0; c < im.c; ++c) {
+        for (y = 0; y < im.h; ++y) {
+            for (x = 0; x < im.w; ++x) {
+                float pixel = get_pixel(im, x, y, c);
+                if (pixel < min) {
+                    min = pixel;
+                }
+                if (pixel > max) {
+                    max = pixel;
+                }
+            }
+        }
+    }
+    float range = max - min;
+    for (c = 0; c < im.c; ++c) {
+        for (y = 0; y < im.h; ++y) {
+            for (x = 0; x < im.w; ++x) {
+                if (range == 0) {
+                    set_pixel(im, x, y, c, 0);
+                } else {
+                    float pixel = get_pixel(im, x, y, c);
+                    pixel = (pixel - min) / range;
+                    set_pixel(im, x, y, c, pixel);
+                }
+            }
+        }
+    }
 }
 
 image *sobel_image(image im)
 {
-    // TODO
-    return calloc(2, sizeof(image));
+    image *res = calloc(2, sizeof(image));
+    res[0] = im;
+    res[1] = im;
+    return res;
 }
 
 image colorize_sobel(image im)
