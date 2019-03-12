@@ -105,21 +105,27 @@ image make_highpass_filter()
 
 image make_sharpen_filter()
 {
-    // TODO
-    return make_image(1,1,1);
+    image sharpen = make_image(3, 3, 1);
+    set_pixel(sharpen, 1, 0, 0, -1);
+    set_pixel(sharpen, 0, 1, 0, -1);
+    set_pixel(sharpen, 1, 1, 0, 5);
+    set_pixel(sharpen, 2, 1, 0, -1);
+    set_pixel(sharpen, 1, 2, 0, -1);
+    return sharpen;
 }
 
 image make_emboss_filter()
 {
-    // TODO
-    return make_image(1,1,1);
+    image emboss = make_image(3, 3, 1);
+    set_pixel(emboss, 0, 0, 0, -2);
+    set_pixel(emboss, 1, 0, 0, -1);
+    set_pixel(emboss, 0, 1, 0, -1);
+    set_pixel(emboss, 1, 1, 0, 1);
+    set_pixel(emboss, 2, 1, 0, 1);
+    set_pixel(emboss, 1, 2, 0, 1);
+    set_pixel(emboss, 2, 2, 0, 2);
+    return emboss;
 }
-
-// Question 2.2.1: Which of these filters should we use preserve when we run our convolution and which ones should we not? Why?
-// Answer: TODO
-
-// Question 2.2.2: Do we have to do any post-processing for the above filters? Which ones and why?
-// Answer: TODO
 
 image make_gaussian_filter(float sigma)
 {
