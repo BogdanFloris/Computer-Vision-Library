@@ -275,6 +275,26 @@ image *sobel_image(image im)
 
 image colorize_sobel(image im)
 {
-    // TODO
-    return make_image(1,1,1);
+    // get the sobel results and normalize
+    image *res = sobel_image(im);
+    image mag = res[0];
+    image theta = res[1];
+    feature_normalize(mag);
+    feature_normalize(theta);
+    // initialize colorized sobel image
+    image sobel_c = make_image(im.w, im.h, 3);
+    // loop over pixels to assign colors to all three channels
+    int x, y;
+    for (y = 0; y < im.h; y++) {
+        for (x = 0; x < im.w; x++) {
+            float h = get_pixel(theta, x, y, 0);
+            float s, v;
+            s = v = get_pixel(mag, x, y, 0);
+            set_pixel(sobel_c, x, y, 0, h);
+            set_pixel(sobel_c, x, y, 1, s);
+            set_pixel(sobel_c, x, y, 2, v);
+        }
+    }
+    hsv_to_rgb(sobel_c);
+    return sobel_c;
 }

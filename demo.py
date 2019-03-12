@@ -39,7 +39,7 @@ save_image(lfreq, "low-frequency")
 save_image(hfreq, "high-frequency")
 save_image(reconstruct, "reconstruct")
 
-# sobel magnitude
+# sobel magnitude and theta
 im = load_image("data/dog.jpg")
 res = sobel_image(im)
 mag = res[0]
@@ -48,3 +48,8 @@ feature_normalize(mag)
 feature_normalize(theta)
 save_image(mag, "magnitude")
 save_image(theta, "theta")
+
+# sobel color
+im = load_image("data/dog.jpg")
+sobelcolor = colorize_sobel(im)
+save_image(sobelcolor, "sobel-color")
