@@ -8,18 +8,34 @@
 
 void l1_normalize(image im)
 {
-    // TODO
+    float divisor = im.h * im.w * im.c;
+    int x, y, c;
+    for (c = 0; c < im.c; ++c) {
+        for (y = 0; y < im.h; ++y) {
+            for (x = 0; x < im.w; ++x) {
+                float pixel = get_pixel(im, x, y, c);
+                pixel /= divisor;
+                set_pixel(im, x, y, c, pixel);
+            }
+        }
+    }
 }
 
 image make_box_filter(int w)
 {
-    // TODO
-    return make_image(1,1,1);
+    image box_filter = make_image(w, w, 1);
+    int x, y;
+    for (y = 0; y < w; ++y) {
+        for (x = 0; x < w; ++x) {
+            set_pixel(box_filter, x, y, 0, (float) 1 / (w * w));
+        }
+    }
+    return box_filter;
 }
 
 image convolve_image(image im, image filter, int preserve)
 {
-    // TODO
+    assert(im.c == filter.c || filter.c == 1);
     return make_image(1,1,1);
 }
 
